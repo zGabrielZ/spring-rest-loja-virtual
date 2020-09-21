@@ -4,6 +4,8 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,9 +13,11 @@ import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import com.projeto.spring.lojavirtual.service.exceptions.EntidadeNaoEncontrado;
 import com.projeto.spring.lojavirtual.service.exceptions.Erro;
 import com.projeto.spring.lojavirtual.service.exceptions.Erro.Campo;
 
@@ -33,7 +37,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler{
 			campos.add(new Erro.Campo(nome,msg));
 		}
 		
-		 Instant instant = Instant.now();
+		Instant instant = Instant.now();
 
 		
 		erro.setStatus(httpStatus.value());
@@ -43,5 +47,13 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler{
 		
 		return super.handleExceptionInternal(ex, erro, headers, httpStatus, request);
 		
+	}
+	
+	@ExceptionHandler(EntidadeNaoEncontrado.class)
+	public ResponseEntity<Erro> entidadeNaoEncontrada(EntidadeNaoEncontrado e,
+			HttpServletRequest req){
+		Instant instant = Instant.now();
+		Erro erro = new Erro(HttpStatus.NOT_FOUND.value(),instant.atZone(ZoneId.of("America/Sao_Paulo")),e.getMessage(),null);
+		return ResponseEntity.status(erro.getStatus()).body(erro);
 	}
 }
