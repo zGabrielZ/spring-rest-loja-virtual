@@ -19,8 +19,9 @@ public class ConfigBanco implements CommandLineRunner{
 	public void run(String... args) throws Exception {
 		Usuario usuario = new Usuario(null,"José Pereira","jose@gmail.com","123");
 		Usuario usuario2 = new Usuario(null,"Maria Joaquina","maria@gmail.com","123");
+		Usuario usuario3 = new Usuario(null,"Marcos Fernando","marcos@gmail.com","123");
 		
-		usuarioRepositorio.saveAll(Arrays.asList(usuario,usuario2));
+		usuarioRepositorio.saveAll(Arrays.asList(usuario,usuario2,usuario3));
 	}
 
 }
