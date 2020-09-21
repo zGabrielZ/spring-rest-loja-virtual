@@ -6,6 +6,8 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
+import org.hibernate.validator.constraints.br.CPF;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,6 +24,10 @@ public class UsuarioInserirDTO implements Serializable{
 	@NotBlank(message = "Campo do nome não pode ser vazio")
 	@Size(max = 120,message = "Não pode passa de 120 caracteres")
 	private String nome;
+	
+	@CPF(message = "Cpf inválido")
+	@NotBlank(message = "Campo do cpf não pode ser vazio")
+	private String cpf;
 	
 	@Email(message = "Email inválido")
 	@NotBlank(message = "Campo do email não pode ser vazio")
