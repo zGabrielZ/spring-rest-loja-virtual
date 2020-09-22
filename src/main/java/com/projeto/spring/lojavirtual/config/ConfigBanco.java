@@ -1,13 +1,20 @@
 package com.projeto.spring.lojavirtual.config;
 
+import java.time.Instant;
+import java.time.ZoneId;
 import java.util.Arrays;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Configuration;
 
+import com.projeto.spring.lojavirtual.modelo.entidade.Itens;
+import com.projeto.spring.lojavirtual.modelo.entidade.Pedido;
 import com.projeto.spring.lojavirtual.modelo.entidade.Produto;
 import com.projeto.spring.lojavirtual.modelo.entidade.Usuario;
+import com.projeto.spring.lojavirtual.modelo.entidade.enums.PedidoStatus;
+import com.projeto.spring.lojavirtual.repositorio.ItensRepositorio;
+import com.projeto.spring.lojavirtual.repositorio.PedidoRepositorio;
 import com.projeto.spring.lojavirtual.repositorio.ProdutoRepositorio;
 import com.projeto.spring.lojavirtual.repositorio.UsuarioRepositorio;
 
@@ -19,6 +26,12 @@ public class ConfigBanco implements CommandLineRunner{
 	
 	@Autowired
 	private ProdutoRepositorio produtoRepositorio;
+	
+	@Autowired
+	private PedidoRepositorio pedidoRepositorio;
+
+	@Autowired
+	private ItensRepositorio itensRepositorio;
 	
 	@Override
 	public void run(String... args) throws Exception {
@@ -40,9 +53,25 @@ public class ConfigBanco implements CommandLineRunner{
 		Produto produto12 = new Produto(null,"Cinto",90.00,60);
 		Produto produto13 = new Produto(null,"Carteira",110.00,20);
 		
+		Instant instant = Instant.now();
+		
+		Pedido pedido = new Pedido(null,instant.atZone(ZoneId.of("America/Sao_Paulo")),null,PedidoStatus.ABERTA, usuario);
+		
+		usuario.getPedidos().add(pedido);
+		
+		Itens itens = new Itens(null,2,produto1.getPreco(), produto1, pedido);
+		Itens itens2 = new Itens(null,4,produto4.getPreco(), produto4, pedido);
+		
+		pedido.getItens().addAll(Arrays.asList(itens,itens2));
+		
+		produto1.getItens().add(itens);
+		produto4.getItens().add(itens);
+		
 		produtoRepositorio.saveAll(Arrays.asList(produto1,produto2,produto3,produto4,produto5,produto6,
 				produto7,produto8,produto9,produto10,produto11,produto12,produto13));
 		usuarioRepositorio.saveAll(Arrays.asList(usuario,usuario2,usuario3));
+		pedidoRepositorio.saveAll(Arrays.asList(pedido));
+		itensRepositorio.saveAll(Arrays.asList(itens,itens2));
 	}
 
 }
