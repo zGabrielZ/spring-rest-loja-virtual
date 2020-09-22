@@ -2,6 +2,8 @@ package com.projeto.spring.lojavirtual.modelo.entidade;
 
 import java.io.Serializable;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -11,18 +13,16 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import com.projeto.spring.lojavirtual.modelo.entidade.enums.PedidoStatus;
-
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
 @Table(name = "tb_pedido")
-@AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
@@ -44,6 +44,18 @@ public class Pedido implements Serializable{
 	@ManyToOne
 	@JoinColumn(name = "id_usuario")
 	private Usuario usuario;
+	
+	@OneToMany(mappedBy = "pedido")
+	private List<Itens> itens = new ArrayList<Itens>();
+	
+	public Pedido(Long id, ZonedDateTime dataDoPedido, ZonedDateTime dataDoPedidoFinalizada, PedidoStatus pedidoStatus,
+			Usuario usuario) {
+		this.id = id;
+		this.dataDoPedido = dataDoPedido;
+		this.dataDoPedidoFinalizada = dataDoPedidoFinalizada;
+		this.pedidoStatus = pedidoStatus;
+		this.usuario = usuario;
+	}
 	
 	@Override
 	public int hashCode() {
@@ -68,7 +80,6 @@ public class Pedido implements Serializable{
 			return false;
 		return true;
 	}
-	
 	
 
 }

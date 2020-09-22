@@ -1,44 +1,46 @@
 package com.projeto.spring.lojavirtual.modelo.entidade;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+
+
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "tb_produto")
+@Table(name = "tb_itens")
+@AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
-public class Produto implements Serializable{
+public class Itens implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	private String nome;
+	
+	private Integer quantidade;
+	
 	private Double preco;
-	private Integer estoque;
 	
-	@OneToMany(mappedBy = "produto")
-	private List<Itens> itens = new ArrayList<Itens>();
+	@ManyToOne
+	@JoinColumn(name = "produto_id")
+	private Produto produto;
 	
-	public Produto(Long id, String nome, Double preco, Integer estoque) {
-		this.id = id;
-		this.nome = nome;
-		this.preco = preco;
-		this.estoque = estoque;
-	}
+	@ManyToOne
+	@JoinColumn(name = "pedido_id")
+	private Pedido pedido;
 	
 	@Override
 	public int hashCode() {
@@ -55,7 +57,7 @@ public class Produto implements Serializable{
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Produto other = (Produto) obj;
+		Itens other = (Itens) obj;
 		if (id == null) {
 			if (other.id != null)
 				return false;
@@ -63,6 +65,7 @@ public class Produto implements Serializable{
 			return false;
 		return true;
 	}
+	
 	
 
 }
