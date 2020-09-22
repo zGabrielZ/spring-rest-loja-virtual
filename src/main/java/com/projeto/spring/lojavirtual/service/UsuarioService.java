@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.projeto.spring.lojavirtual.modelo.entidade.Usuario;
 import com.projeto.spring.lojavirtual.repositorio.UsuarioRepositorio;
 import com.projeto.spring.lojavirtual.service.exceptions.EntidadeNaoEncontrado;
+import com.projeto.spring.lojavirtual.service.exceptions.RegraDeNegocio;
 
 @Service
 public class UsuarioService {
@@ -16,7 +17,15 @@ public class UsuarioService {
 	@Autowired
 	private UsuarioRepositorio usuarioRepositorio;
 	
+	public void validarEmail(String email) {
+		boolean usuarioEmail = usuarioRepositorio.existsByEmail(email);
+		if(usuarioEmail) {
+			throw new RegraDeNegocio("Já existe este usuário cadastrado com este email, por favor tente novamente");
+		}
+	}
+	
 	public Usuario inserir(Usuario usuario) {
+		validarEmail(usuario.getEmail());
 		return usuarioRepositorio.save(usuario);
 	} 
 	

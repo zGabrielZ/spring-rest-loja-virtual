@@ -19,6 +19,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 import com.projeto.spring.lojavirtual.service.exceptions.EntidadeNaoEncontrado;
 import com.projeto.spring.lojavirtual.service.exceptions.Erro;
+import com.projeto.spring.lojavirtual.service.exceptions.RegraDeNegocio;
 import com.projeto.spring.lojavirtual.service.exceptions.Erro.Campo;
 
 @ControllerAdvice
@@ -54,6 +55,14 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler{
 			HttpServletRequest req){
 		Instant instant = Instant.now();
 		Erro erro = new Erro(HttpStatus.NOT_FOUND.value(),instant.atZone(ZoneId.of("America/Sao_Paulo")),e.getMessage(),null);
+		return ResponseEntity.status(erro.getStatus()).body(erro);
+	}
+	
+	@ExceptionHandler(RegraDeNegocio.class)
+	public ResponseEntity<Erro> regraDeNegocio(RegraDeNegocio e,
+			HttpServletRequest req){
+		Instant instant = Instant.now();
+		Erro erro = new Erro(HttpStatus.BAD_REQUEST.value(),instant.atZone(ZoneId.of("America/Sao_Paulo")),e.getMessage(),null);
 		return ResponseEntity.status(erro.getStatus()).body(erro);
 	}
 }
