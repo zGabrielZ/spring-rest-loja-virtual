@@ -5,7 +5,14 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.projeto.spring.lojavirtual.modelo.entidade.Itens;
 import com.projeto.spring.lojavirtual.modelo.entidade.Pedido;
+import com.projeto.spring.lojavirtual.modelo.entidade.Produto;
+import com.projeto.spring.lojavirtual.modelo.entidade.Usuario;
+import com.projeto.spring.lojavirtual.modelo.entidade.enums.PedidoStatus;
+import com.projeto.spring.lojavirtual.repositorio.ItensRepositorio;
 import com.projeto.spring.lojavirtual.repositorio.PedidoRepositorio;
 import com.projeto.spring.lojavirtual.service.exceptions.EntidadeNaoEncontrado;
 
@@ -14,6 +21,42 @@ public class PedidoService {
 
 	@Autowired
 	private PedidoRepositorio pedidoRepositorio;
+	
+	@Autowired
+	private UsuarioService usuarioService;
+	
+	@Autowired
+	private ProdutoService produtoService;
+	
+	@Autowired
+	private ItensRepositorio itensRepositorio;
+	
+	@Transactional
+	public Pedido inserir(Pedido pedido) {
+		pedido.setDataDoPedido(new Date());
+		pedido.setPedidoStatus(PedidoStatus.ABERTA);
+		
+		Usuario usuario = usuarioService.buscarPorId(pedido.getUsuario().getId());
+		
+		pedido.setUsuario(usuario);
+		usuario.getPedidos().add(pedido);
+		
+		pedido = pedidoRepositorio.save(pedido);
+		for(Itens itens : pedido.getItens()) {
+			Produto produto = produtoService.buscarPorId(itens.getProduto().getId());
+			itens.setProduto(produto);
+			itens.setPreco(produto.getPreco());
+			itens.setPedido(pedido);
+			
+			Integer estoqueAtual = itens.getProduto().getEstoque() - itens.getQuantidade();
+			itens.getProduto().setEstoque(estoqueAtual);;
+			
+		}
+		
+		itensRepositorio.saveAll(pedido.getItens());
+		return pedido;
+		
+	}
 	
 	public List<Pedido> listagem(Long idUsuario) {
 		return pedidoRepositorio.getPedidos(idUsuario);

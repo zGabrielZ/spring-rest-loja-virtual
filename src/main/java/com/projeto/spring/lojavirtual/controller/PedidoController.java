@@ -1,7 +1,10 @@
 package com.projeto.spring.lojavirtual.controller;
+import java.net.URI;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import javax.validation.Valid;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,16 +12,20 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.projeto.spring.lojavirtual.controller.utils.URL;
 import com.projeto.spring.lojavirtual.modelo.entidade.Pedido;
 import com.projeto.spring.lojavirtual.modelo.entidade.Usuario;
 import com.projeto.spring.lojavirtual.modelo.entidade.dto.PedidoDTO;
+import com.projeto.spring.lojavirtual.modelo.entidade.dto.PedidoInserirDTO;
 import com.projeto.spring.lojavirtual.service.PedidoService;
 import com.projeto.spring.lojavirtual.service.UsuarioService;
 
@@ -34,6 +41,15 @@ public class PedidoController {
 	
 	@Autowired
 	private ModelMapper modelMapper;
+	
+	@PostMapping
+	public ResponseEntity<Pedido> cadastrar(@Valid @RequestBody PedidoInserirDTO pedidoInserirDTO){
+		Pedido pedido = paraInserirDto(pedidoInserirDTO);
+		pedido = pedidoService.inserir(pedido);
+		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
+				.buildAndExpand(pedido.getId()).toUri();
+		return ResponseEntity.created(uri).build();
+	}
 		
 	@GetMapping("/{idUsuario}/lista")
 	public ResponseEntity<List<PedidoDTO>> listagem(@PathVariable Long idUsuario) {
@@ -59,6 +75,9 @@ public class PedidoController {
 		return ResponseEntity.ok().body(paraListaDto(pedidos));
 	}
 	
+	public Pedido paraInserirDto(PedidoInserirDTO inserirDTO) {
+		return modelMapper.map(inserirDTO,Pedido.class);
+	}
 	
 	@GetMapping("/{id}")
 	public ResponseEntity<PedidoDTO> buscarPorId(@PathVariable Long id){
