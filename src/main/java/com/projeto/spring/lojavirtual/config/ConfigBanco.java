@@ -56,22 +56,31 @@ public class ConfigBanco implements CommandLineRunner{
 		Instant instant = Instant.now();
 		
 		Pedido pedido = new Pedido(null,instant.atZone(ZoneId.of("America/Sao_Paulo")),null,PedidoStatus.ABERTA, usuario);
+		Pedido pedido2 = new Pedido(null,instant.atZone(ZoneId.of("America/Sao_Paulo")),null,PedidoStatus.CANCELADA, usuario);
+		Pedido pedido3 = new Pedido(null,instant.atZone(ZoneId.of("America/Sao_Paulo")),null,PedidoStatus.CANCELADA, usuario);
 		
-		usuario.getPedidos().add(pedido);
+		usuario.getPedidos().addAll(Arrays.asList(pedido,pedido2,pedido3));
 		
 		Itens itens = new Itens(null,2,produto1.getPreco(), produto1, pedido);
 		Itens itens2 = new Itens(null,4,produto4.getPreco(), produto4, pedido);
 		
+		Itens itens3 = new Itens(null,2,produto13.getPreco(), produto13, pedido2);
+		Itens itens4 = new Itens(null,6,produto6.getPreco(), produto6, pedido3);
+		
 		pedido.getItens().addAll(Arrays.asList(itens,itens2));
+		pedido2.getItens().addAll(Arrays.asList(itens3));
+		pedido3.getItens().addAll(Arrays.asList(itens4));
 		
 		produto1.getItens().add(itens);
-		produto4.getItens().add(itens);
+		produto4.getItens().add(itens2);
+		produto13.getItens().add(itens3);
+		produto6.getItens().add(itens4);
 		
 		produtoRepositorio.saveAll(Arrays.asList(produto1,produto2,produto3,produto4,produto5,produto6,
 				produto7,produto8,produto9,produto10,produto11,produto12,produto13));
 		usuarioRepositorio.saveAll(Arrays.asList(usuario,usuario2,usuario3));
-		pedidoRepositorio.saveAll(Arrays.asList(pedido));
-		itensRepositorio.saveAll(Arrays.asList(itens,itens2));
+		pedidoRepositorio.saveAll(Arrays.asList(pedido,pedido2,pedido3));
+		itensRepositorio.saveAll(Arrays.asList(itens,itens2,itens3,itens4));
 	}
 
 }
