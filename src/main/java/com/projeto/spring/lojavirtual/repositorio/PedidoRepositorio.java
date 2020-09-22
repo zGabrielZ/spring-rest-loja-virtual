@@ -13,4 +13,7 @@ public interface PedidoRepositorio extends JpaRepository<Pedido, Long>{
 
 	@Query("select p from Pedido p where p.usuario.id = ?1")
 	public List<Pedido> getPedidos(Long idUsuario);
+	
+	@Query("select p from Pedido p where p.usuario.id = ?1 and p.pedidoStatus ='CANCELADA' ")
+	public List<Pedido> getPedidosCancelados(Long idUsuario);
 }

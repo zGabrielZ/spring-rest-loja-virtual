@@ -35,6 +35,12 @@ public class PedidoController {
 		return ResponseEntity.ok().body(paraListaDto(pedidoService.listagem(usuario.getId())));
 	}
 	
+	@GetMapping("/{idUsuario}/lista/cancelados")
+	public ResponseEntity<List<PedidoDTO>> listagemPedidosCancelados(@PathVariable Long idUsuario) {
+		Usuario usuario = usuarioService.buscarPorId(idUsuario);
+		return ResponseEntity.ok().body(paraListaDto(pedidoService.listagemPedidosCancelados(usuario.getId())));
+	}
+	
 	
 	@GetMapping("/{id}")
 	public ResponseEntity<PedidoDTO> buscarPorId(@PathVariable Long id){

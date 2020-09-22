@@ -19,6 +19,10 @@ public class PedidoService {
 		return pedidoRepositorio.getPedidos(idUsuario);
 	}
 	
+	public List<Pedido> listagemPedidosCancelados(Long idUsuario) {
+		return pedidoRepositorio.getPedidosCancelados(idUsuario);
+	}
+	
 	public Pedido buscarPorId(Long id) {
 		Optional<Pedido> pedido = pedidoRepositorio.findById(id);
 		if(!pedido.isPresent()) {
