@@ -28,6 +28,7 @@ public class Produto implements Serializable{
 	private Long id;
 	private String nome;
 	private Double preco;
+	private Integer estoque;
 	
 	@Override
 	public int hashCode() {
