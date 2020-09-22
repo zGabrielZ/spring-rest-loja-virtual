@@ -8,6 +8,7 @@ import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -44,8 +45,8 @@ public class Pedido implements Serializable{
 	@ManyToOne
 	@JoinColumn(name = "id_usuario")
 	private Usuario usuario;
-	
-	@OneToMany(mappedBy = "pedido")
+	 
+	@OneToMany(mappedBy = "pedido",fetch = FetchType.EAGER)
 	private List<Itens> itens = new ArrayList<Itens>();
 	
 	public Pedido(Long id, ZonedDateTime dataDoPedido, ZonedDateTime dataDoPedidoFinalizada, PedidoStatus pedidoStatus,
