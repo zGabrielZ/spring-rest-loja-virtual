@@ -1,4 +1,5 @@
 package com.projeto.spring.lojavirtual.controller;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -8,8 +9,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.projeto.spring.lojavirtual.controller.utils.URL;
 import com.projeto.spring.lojavirtual.modelo.entidade.Pedido;
 import com.projeto.spring.lojavirtual.modelo.entidade.Usuario;
 import com.projeto.spring.lojavirtual.modelo.entidade.dto.PedidoDTO;
@@ -39,6 +42,18 @@ public class PedidoController {
 	public ResponseEntity<List<PedidoDTO>> listagemPedidosCancelados(@PathVariable Long idUsuario) {
 		Usuario usuario = usuarioService.buscarPorId(idUsuario);
 		return ResponseEntity.ok().body(paraListaDto(pedidoService.listagemPedidosCancelados(usuario.getId())));
+	}
+	
+	@GetMapping("/{idUsuario}/buscar")
+	public ResponseEntity<List<PedidoDTO>> filtrarPeriodo(
+			@PathVariable Long idUsuario,
+			@RequestParam(value = "min",defaultValue = "") String minDate,
+			@RequestParam(value = "max",defaultValue = "") String maxDate){
+		Date min = URL.convertDate(minDate,new Date(0L));
+		Date max = URL.convertDate(maxDate,new Date());
+		Usuario usuario = usuarioService.buscarPorId(idUsuario);
+		List<Pedido> pedidos = pedidoService.filtrarPeriodo(min, max, usuario.getId());
+		return ResponseEntity.ok().body(paraListaDto(pedidos));
 	}
 	
 	

@@ -1,8 +1,8 @@
 package com.projeto.spring.lojavirtual.modelo.entidade.dto;
 
 import java.io.Serializable;
-import java.time.ZonedDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.EnumType;
@@ -29,10 +29,10 @@ public class PedidoDTO implements Serializable{
 	private Long id;
 	
 	@JsonFormat(pattern = "dd/MM/yyyy HH:mm",timezone = MY_TIME_ZONE)
-	private ZonedDateTime dataDoPedido;
+	private Date dataDoPedido;
 	
 	@JsonFormat(pattern = "dd/MM/yyyy HH:mm",timezone = MY_TIME_ZONE)
-	private ZonedDateTime dataDoPedidoFinalizada;
+	private Date dataDoPedidoFinalizada;
 	
 	@Enumerated(EnumType.STRING)
 	private PedidoStatus pedidoStatus;

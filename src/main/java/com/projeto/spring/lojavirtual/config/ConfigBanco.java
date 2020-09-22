@@ -1,8 +1,6 @@
 package com.projeto.spring.lojavirtual.config;
-
-import java.time.Instant;
-import java.time.ZoneId;
 import java.util.Arrays;
+import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -53,14 +51,12 @@ public class ConfigBanco implements CommandLineRunner{
 		Produto produto12 = new Produto(null,"Cinto",90.00,60);
 		Produto produto13 = new Produto(null,"Carteira",110.00,20);
 		
-		Instant instant = Instant.now();
+		Pedido pedido = new Pedido(null,new Date(),null,PedidoStatus.ABERTA, usuario);
+		Pedido pedido2 = new Pedido(null,new Date(),null,PedidoStatus.CANCELADA, usuario);
+		Pedido pedido3 = new Pedido(null,new Date(),null,PedidoStatus.CANCELADA, usuario);
 		
-		Pedido pedido = new Pedido(null,instant.atZone(ZoneId.of("America/Sao_Paulo")),null,PedidoStatus.ABERTA, usuario);
-		Pedido pedido2 = new Pedido(null,instant.atZone(ZoneId.of("America/Sao_Paulo")),null,PedidoStatus.CANCELADA, usuario);
-		Pedido pedido3 = new Pedido(null,instant.atZone(ZoneId.of("America/Sao_Paulo")),null,PedidoStatus.CANCELADA, usuario);
-		
-		Pedido pedido4 = new Pedido(null,instant.atZone(ZoneId.of("America/Sao_Paulo")),null,PedidoStatus.ABERTA, usuario2);
-		Pedido pedido5 = new Pedido(null,instant.atZone(ZoneId.of("America/Sao_Paulo")),null,PedidoStatus.CANCELADA, usuario2);
+		Pedido pedido4 = new Pedido(null,new Date(),null,PedidoStatus.ABERTA, usuario2);
+		Pedido pedido5 = new Pedido(null,new Date(),null,PedidoStatus.CANCELADA, usuario2);
 		
 		usuario.getPedidos().addAll(Arrays.asList(pedido,pedido2,pedido3));
 		usuario2.getPedidos().addAll(Arrays.asList(pedido4,pedido5));

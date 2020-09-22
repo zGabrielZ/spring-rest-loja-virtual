@@ -1,8 +1,8 @@
 package com.projeto.spring.lojavirtual.modelo.entidade;
 
 import java.io.Serializable;
-import java.time.ZonedDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Entity;
@@ -35,9 +35,9 @@ public class Pedido implements Serializable{
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
-	private ZonedDateTime dataDoPedido;
+	private Date dataDoPedido;
 	
-	private ZonedDateTime dataDoPedidoFinalizada;
+	private Date dataDoPedidoFinalizada;
 	
 	@Enumerated(EnumType.STRING)
 	private PedidoStatus pedidoStatus;
@@ -49,7 +49,7 @@ public class Pedido implements Serializable{
 	@OneToMany(mappedBy = "pedido",fetch = FetchType.EAGER)
 	private List<Itens> itens = new ArrayList<Itens>();
 	
-	public Pedido(Long id, ZonedDateTime dataDoPedido, ZonedDateTime dataDoPedidoFinalizada, PedidoStatus pedidoStatus,
+	public Pedido(Long id, Date dataDoPedido, Date dataDoPedidoFinalizada, PedidoStatus pedidoStatus,
 			Usuario usuario) {
 		this.id = id;
 		this.dataDoPedido = dataDoPedido;
