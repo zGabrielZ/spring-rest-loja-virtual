@@ -9,6 +9,8 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import com.projeto.spring.lojavirtual.modelo.entidade.enums.PedidoStatus;
@@ -39,6 +41,8 @@ public class Pedido implements Serializable{
 	@Enumerated(EnumType.STRING)
 	private PedidoStatus pedidoStatus;
 	
+	@ManyToOne
+	@JoinColumn(name = "id_usuario")
 	private Usuario usuario;
 	
 	@Override

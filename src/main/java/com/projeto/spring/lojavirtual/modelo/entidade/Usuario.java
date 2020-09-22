@@ -1,21 +1,21 @@
 package com.projeto.spring.lojavirtual.modelo.entidade;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
-
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
 @Table(name = "tb_usuario")
-@AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
@@ -30,6 +30,18 @@ public class Usuario implements Serializable{
 	private String cpf;
 	private String email;
 	private String senha;
+	
+	@OneToMany(mappedBy = "usuario")
+	private List<Pedido> pedidos = new ArrayList<Pedido>();
+	
+	public Usuario(Long id, String nome, String cpf, String email, String senha) {
+		this.id = id;
+		this.nome = nome;
+		this.cpf = cpf;
+		this.email = email;
+		this.senha = senha;
+	}
+	
 	
 	@Override
 	public int hashCode() {
@@ -54,7 +66,4 @@ public class Usuario implements Serializable{
 			return false;
 		return true;
 	}
-	
-	
-
 }
