@@ -15,8 +15,8 @@ public class PedidoService {
 	@Autowired
 	private PedidoRepositorio pedidoRepositorio;
 	
-	public List<Pedido> listagem(){
-		return pedidoRepositorio.findAll();
+	public List<Pedido> listagem(Long idUsuario) {
+		return pedidoRepositorio.getPedidos(idUsuario);
 	}
 	
 	public Pedido buscarPorId(Long id) {

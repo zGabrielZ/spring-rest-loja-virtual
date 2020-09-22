@@ -11,8 +11,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.projeto.spring.lojavirtual.modelo.entidade.Pedido;
+import com.projeto.spring.lojavirtual.modelo.entidade.Usuario;
 import com.projeto.spring.lojavirtual.modelo.entidade.dto.PedidoDTO;
 import com.projeto.spring.lojavirtual.service.PedidoService;
+import com.projeto.spring.lojavirtual.service.UsuarioService;
 
 @RestController
 @RequestMapping("/pedidos")
@@ -22,13 +24,17 @@ public class PedidoController {
 	private PedidoService pedidoService;
 	
 	@Autowired
+	private UsuarioService usuarioService;
+	
+	@Autowired
 	private ModelMapper modelMapper;
 		
-	@GetMapping
-	public ResponseEntity<List<PedidoDTO>> listagem(){
-		List<Pedido> pedidos = pedidoService.listagem();
-		return ResponseEntity.ok().body(paraListaDto(pedidos));
+	@GetMapping("/{idUsuario}/lista")
+	public ResponseEntity<List<PedidoDTO>> listagem(@PathVariable Long idUsuario) {
+		Usuario usuario = usuarioService.buscarPorId(idUsuario);
+		return ResponseEntity.ok().body(paraListaDto(pedidoService.listagem(usuario.getId())));
 	}
+	
 	
 	@GetMapping("/{id}")
 	public ResponseEntity<PedidoDTO> buscarPorId(@PathVariable Long id){
