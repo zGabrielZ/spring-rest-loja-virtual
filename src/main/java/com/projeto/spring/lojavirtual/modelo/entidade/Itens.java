@@ -42,6 +42,10 @@ public class Itens implements Serializable{
 	@JoinColumn(name = "pedido_id")
 	private Pedido pedido;
 	
+	public Double getSubTotal() {
+		return quantidade * preco;
+	}
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;
