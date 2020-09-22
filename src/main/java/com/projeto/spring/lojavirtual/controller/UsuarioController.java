@@ -1,6 +1,8 @@
 package com.projeto.spring.lojavirtual.controller;
 
 import java.net.URI;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
@@ -45,11 +47,23 @@ public class UsuarioController {
 		return ResponseEntity.ok().body(paraVisualizacaoDto(usuario));
 	}
 	
+	@GetMapping
+	public ResponseEntity<List<UsuarioDTO>> listagem(){
+		List<Usuario> usuarios = usuarioService.listagem();
+		return ResponseEntity.ok().body(paraListaDto(usuarios));
+	}
+	
 	public Usuario paraInserirDto(UsuarioInserirDTO inserirDTO) {
 		return modelMapper.map(inserirDTO,Usuario.class);
 	}
 	
 	public UsuarioDTO paraVisualizacaoDto(Usuario usuario) {
 		return modelMapper.map(usuario,UsuarioDTO.class);
+	}
+	
+	private List<UsuarioDTO> paraListaDto(List<Usuario> usuarios) {
+		return usuarios.stream()
+				.map(usuario -> paraVisualizacaoDto(usuario))
+				.collect(Collectors.toList());
 	}
 }
