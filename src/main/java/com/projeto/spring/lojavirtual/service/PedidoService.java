@@ -36,4 +36,15 @@ public class PedidoService {
 		maxDate = new Date(maxDate.getTime() + 24 * 60 * 60 * 1000);
 		return pedidoRepositorio.filtrarPeriodo(minDate, maxDate,idUsuario);
 	}
+	
+	public void cancelar(Long id) {
+		Optional<Pedido> pedido = pedidoRepositorio.findById(id);
+		if(!pedido.isPresent()) {
+			throw new EntidadeNaoEncontrado("Pedido não encontrado");
+		}
+		
+		pedido.get().cancelar();
+		
+		pedidoRepositorio.save(pedido.get());
+	}
 }

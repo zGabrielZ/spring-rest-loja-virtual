@@ -16,8 +16,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-
 import com.projeto.spring.lojavirtual.modelo.entidade.enums.PedidoStatus;
+import com.projeto.spring.lojavirtual.service.exceptions.RegraDeNegocio;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -37,7 +38,7 @@ public class Pedido implements Serializable{
 	
 	private Date dataDoPedido;
 	
-	private Date dataDoPedidoFinalizada;
+	private Date dataDoPedidoCancelada;
 	
 	@Enumerated(EnumType.STRING)
 	private PedidoStatus pedidoStatus;
@@ -49,11 +50,11 @@ public class Pedido implements Serializable{
 	@OneToMany(mappedBy = "pedido",fetch = FetchType.EAGER)
 	private List<Itens> itens = new ArrayList<Itens>();
 	
-	public Pedido(Long id, Date dataDoPedido, Date dataDoPedidoFinalizada, PedidoStatus pedidoStatus,
+	public Pedido(Long id, Date dataDoPedido, Date dataDoPedidoCancelada, PedidoStatus pedidoStatus,
 			Usuario usuario) {
 		this.id = id;
 		this.dataDoPedido = dataDoPedido;
-		this.dataDoPedidoFinalizada = dataDoPedidoFinalizada;
+		this.dataDoPedidoCancelada = dataDoPedidoCancelada;
 		this.pedidoStatus = pedidoStatus;
 		this.usuario = usuario;
 	}
@@ -64,6 +65,21 @@ public class Pedido implements Serializable{
 			soma+=itens.getSubTotal();
 		}
 		return soma;
+	}
+	
+	
+	public boolean naoPodeSerCancelada() {
+		return PedidoStatus.FINALIZADA.equals(getPedidoStatus()) || PedidoStatus.CANCELADA.equals(getPedidoStatus());
+	}
+	
+	public void cancelar() {
+		
+		if(naoPodeSerCancelada()) {
+			throw new RegraDeNegocio("Pedido não pode ser cancelado, pois já está cancelada ou finalizada");
+		}
+		
+		setPedidoStatus(PedidoStatus.CANCELADA);
+		setDataDoPedidoCancelada(new Date());
 	}
 	
 	@Override
