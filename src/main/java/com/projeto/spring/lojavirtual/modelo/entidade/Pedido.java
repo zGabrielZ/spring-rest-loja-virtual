@@ -38,6 +38,8 @@ public class Pedido implements Serializable{
 	
 	private Date dataDoPedido;
 	
+	private Date dataDoPedidoFinalizada;
+	
 	private Date dataDoPedidoCancelada;
 	
 	@Enumerated(EnumType.STRING)
@@ -72,6 +74,10 @@ public class Pedido implements Serializable{
 		return PedidoStatus.FINALIZADA.equals(getPedidoStatus()) || PedidoStatus.CANCELADA.equals(getPedidoStatus());
 	}
 	
+	public boolean naoPodeSerFinalizado() {
+		return PedidoStatus.FINALIZADA.equals(getPedidoStatus()) || PedidoStatus.CANCELADA.equals(getPedidoStatus());
+	}
+	
 	public void cancelar() {
 		
 		if(naoPodeSerCancelada()) {
@@ -80,6 +86,16 @@ public class Pedido implements Serializable{
 		
 		setPedidoStatus(PedidoStatus.CANCELADA);
 		setDataDoPedidoCancelada(new Date());
+	}
+	
+	public void finalizar() {
+		
+		if(naoPodeSerFinalizado()) {
+			throw new RegraDeNegocio("Pedido não pode ser finalizado, pois já está finalizada ou cancelada");
+		}
+		
+		setPedidoStatus(PedidoStatus.FINALIZADA);
+		setDataDoPedidoFinalizada(new Date());
 	}
 	
 	@Override

@@ -49,13 +49,24 @@ public class PedidoService {
 			itens.setPedido(pedido);
 			
 			Integer estoqueAtual = itens.getProduto().getEstoque() - itens.getQuantidade();
-			itens.getProduto().setEstoque(estoqueAtual);;
+			itens.getProduto().setEstoque(estoqueAtual);
 			
 		}
 		
 		itensRepositorio.saveAll(pedido.getItens());
 		return pedido;
 		
+	}
+	
+	public void alterarDadosDoPedido(Long id) {
+		Optional<Pedido> pedido = pedidoRepositorio.findById(id);
+		if(!pedido.isPresent()) {
+			throw new EntidadeNaoEncontrado("Pedido não encontrado");
+		}
+		
+		pedido.get().finalizar();
+		
+		pedidoRepositorio.save(pedido.get());
 	}
 	
 	public List<Pedido> listagem(Long idUsuario) {

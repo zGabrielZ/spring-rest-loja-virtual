@@ -75,10 +75,6 @@ public class PedidoController {
 		return ResponseEntity.ok().body(paraListaDto(pedidos));
 	}
 	
-	public Pedido paraInserirDto(PedidoInserirDTO inserirDTO) {
-		return modelMapper.map(inserirDTO,Pedido.class);
-	}
-	
 	@GetMapping("/{id}")
 	public ResponseEntity<PedidoDTO> buscarPorId(@PathVariable Long id){
 		Pedido pedido = pedidoService.buscarPorId(id);
@@ -89,6 +85,16 @@ public class PedidoController {
 	@ResponseStatus(value = HttpStatus.NO_CONTENT)
 	public void paralisar(@PathVariable Long pedidoId) {
 		pedidoService.cancelar(pedidoId);
+	}
+	
+	@PutMapping("/{pedidoId}/alterar")
+	@ResponseStatus(value = HttpStatus.NO_CONTENT)
+	public void alterar(@PathVariable Long pedidoId) {
+		pedidoService.alterarDadosDoPedido(pedidoId);
+	}
+	
+	public Pedido paraInserirDto(PedidoInserirDTO inserirDTO) {
+		return modelMapper.map(inserirDTO,Pedido.class);
 	}
 	
 	public PedidoDTO paraVisualizacaoDto(Pedido pedido) {

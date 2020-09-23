@@ -32,6 +32,9 @@ public class PedidoDTO implements Serializable{
 	private Date dataDoPedido;
 	
 	@JsonFormat(pattern = "dd/MM/yyyy HH:mm",timezone = MY_TIME_ZONE)
+	private Date dataDoPedidoFinalizada;
+	
+	@JsonFormat(pattern = "dd/MM/yyyy HH:mm",timezone = MY_TIME_ZONE)
 	private Date dataDoPedidoCancelada;
 	
 	@Enumerated(EnumType.STRING)
