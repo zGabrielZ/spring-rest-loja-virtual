@@ -21,6 +21,7 @@ import com.projeto.spring.lojavirtual.service.exceptions.EntidadeNaoEncontrado;
 import com.projeto.spring.lojavirtual.service.exceptions.Erro;
 import com.projeto.spring.lojavirtual.service.exceptions.RegraDeNegocio;
 import com.projeto.spring.lojavirtual.service.exceptions.Erro.Campo;
+import com.projeto.spring.lojavirtual.service.exceptions.ErroAutenticacao;
 
 @ControllerAdvice
 public class ApiExceptionHandler extends ResponseEntityExceptionHandler{
@@ -63,6 +64,14 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler{
 			HttpServletRequest req){
 		Instant instant = Instant.now();
 		Erro erro = new Erro(HttpStatus.BAD_REQUEST.value(),instant.atZone(ZoneId.of("America/Sao_Paulo")),e.getMessage(),null);
+		return ResponseEntity.status(erro.getStatus()).body(erro);
+	}
+	
+	@ExceptionHandler(ErroAutenticacao.class)
+	public ResponseEntity<Erro> erroAutenticacao(ErroAutenticacao e,
+			HttpServletRequest req){
+		Instant instant = Instant.now();
+		Erro erro = new Erro(HttpStatus.FORBIDDEN.value(),instant.atZone(ZoneId.of("America/Sao_Paulo")),e.getMessage(),null);
 		return ResponseEntity.status(erro.getStatus()).body(erro);
 	}
 }

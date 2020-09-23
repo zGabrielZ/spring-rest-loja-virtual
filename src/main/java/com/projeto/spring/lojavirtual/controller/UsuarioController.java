@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.projeto.spring.lojavirtual.modelo.entidade.Usuario;
+import com.projeto.spring.lojavirtual.modelo.entidade.dto.UsuarioAutenticarDTO;
 import com.projeto.spring.lojavirtual.modelo.entidade.dto.UsuarioDTO;
 import com.projeto.spring.lojavirtual.modelo.entidade.dto.UsuarioInserirDTO;
 import com.projeto.spring.lojavirtual.service.UsuarioService;
@@ -41,6 +42,13 @@ public class UsuarioController {
 		return ResponseEntity.created(uri).build();
 	}
 	
+	@PostMapping("/autenticar")
+	public ResponseEntity<Usuario> autenticar(@Valid @RequestBody UsuarioAutenticarDTO usuarioAutenticarDTO){
+		Usuario usuario = paraAutenticarDto(usuarioAutenticarDTO);
+		usuario = usuarioService.autenticar(usuario.getEmail(),usuario.getSenha());
+		return ResponseEntity.noContent().build();
+	}
+	
 	@GetMapping("/{id}")
 	public ResponseEntity<UsuarioDTO> buscarPorId(@PathVariable Long id){
 		Usuario usuario = usuarioService.buscarPorId(id);
@@ -55,6 +63,10 @@ public class UsuarioController {
 	
 	public Usuario paraInserirDto(UsuarioInserirDTO inserirDTO) {
 		return modelMapper.map(inserirDTO,Usuario.class);
+	}
+	
+	public Usuario paraAutenticarDto(UsuarioAutenticarDTO autenticarDTO) {
+		return modelMapper.map(autenticarDTO,Usuario.class);
 	}
 	
 	public UsuarioDTO paraVisualizacaoDto(Usuario usuario) {

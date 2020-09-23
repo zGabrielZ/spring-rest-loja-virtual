@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.projeto.spring.lojavirtual.modelo.entidade.Usuario;
 import com.projeto.spring.lojavirtual.repositorio.UsuarioRepositorio;
 import com.projeto.spring.lojavirtual.service.exceptions.EntidadeNaoEncontrado;
+import com.projeto.spring.lojavirtual.service.exceptions.ErroAutenticacao;
 import com.projeto.spring.lojavirtual.service.exceptions.RegraDeNegocio;
 
 @Service
@@ -28,6 +29,19 @@ public class UsuarioService {
 		validarEmail(usuario.getEmail());
 		return usuarioRepositorio.save(usuario);
 	} 
+	
+	public Usuario autenticar(String email, String senha) {
+		Optional<Usuario> usuario = usuarioRepositorio.findByEmail(email);
+		if(!usuario.isPresent()) {
+			throw new ErroAutenticacao("Usuário não encontrado para o email informado");
+		}
+		
+		if(!usuario.get().getSenha().equals(senha)){
+			throw new ErroAutenticacao("Senha inválida");
+		}
+		
+		return usuario.get();
+	}
 	
 	public Usuario buscarPorId(Long id) {
 		Optional<Usuario> usuario = usuarioRepositorio.findById(id);
