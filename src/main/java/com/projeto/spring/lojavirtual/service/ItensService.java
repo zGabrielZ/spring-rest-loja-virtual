@@ -35,5 +35,9 @@ public class ItensService {
 		return itemsRepositorio.save(itens);
 	}
 	
+	public void deletar(Long idItem) {
+		itemsRepositorio.deleteById(idItem);
+	}
+	
 
 }
