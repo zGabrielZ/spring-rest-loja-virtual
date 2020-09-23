@@ -2,8 +2,11 @@ package com.projeto.spring.lojavirtual.service;
 
 import java.util.Optional;
 
+import javax.persistence.EntityNotFoundException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.projeto.spring.lojavirtual.modelo.entidade.Itens;
 import com.projeto.spring.lojavirtual.modelo.entidade.Pedido;
@@ -37,6 +40,21 @@ public class ItensService {
 	
 	public void deletar(Long idItem) {
 		itemsRepositorio.deleteById(idItem);
+	}
+	
+	@Transactional
+	public Itens atualizar(Long idItens,Itens itens,Long idPedido) {
+		try {
+			Itens entidade = itemsRepositorio.getOne(idItens);
+			updateData(entidade,itens);
+			return itemsRepositorio.save(entidade);
+		} catch (EntityNotFoundException e) {
+			throw new EntidadeNaoEncontrado("Itém não encontrado");
+		}
+	}
+
+	private void updateData(Itens entidade, Itens itens) {
+		entidade.setQuantidade(itens.getQuantidade());
 	}
 	
 
