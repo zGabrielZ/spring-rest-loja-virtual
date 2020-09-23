@@ -1,13 +1,21 @@
 package com.projeto.spring.lojavirtual.controller;
+import java.net.URI;
+
+import javax.validation.Valid;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.projeto.spring.lojavirtual.modelo.entidade.Itens;
 import com.projeto.spring.lojavirtual.modelo.entidade.dto.ItensDTO;
+import com.projeto.spring.lojavirtual.modelo.entidade.dto.ItensInserirDTO;
 import com.projeto.spring.lojavirtual.service.ItensService;
 import com.projeto.spring.lojavirtual.service.PedidoService;
 
@@ -23,6 +31,16 @@ public class ItensController {
 	@Autowired
 	private ModelMapper modelMapper;
 	
+	@PostMapping("/{idPedido}/itens")
+	public ResponseEntity<Itens> inserir(@Valid @RequestBody ItensInserirDTO itensInserirDTO,@PathVariable Long idPedido) {
+		Itens itens = paraInserirDto(itensInserirDTO);
+		itens = itensService.inserir(itens,idPedido);
+		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
+				.buildAndExpand(itens.getId()).toUri();
+		return ResponseEntity.created(uri).build();
+	}
+	
+	
 	@GetMapping("/{idPedido}/pedidos/{idItens}/itens")
 	public ResponseEntity<ItensDTO> consultarPorId(@PathVariable Long idPedido,
 			@PathVariable Long idItens) {
@@ -32,6 +50,9 @@ public class ItensController {
 		return ResponseEntity.ok().body(itensDto);
 	}
 	
+	public Itens paraInserirDto(ItensInserirDTO inserirDTO) {
+		return modelMapper.map(inserirDTO,Itens.class);
+	}
 	
 	public ItensDTO paraVisualizacaoDto(Itens itens) {
 		return modelMapper.map(itens,ItensDTO.class);

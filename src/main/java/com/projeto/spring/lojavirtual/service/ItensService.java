@@ -29,5 +29,11 @@ public class ItensService {
 		return itens.get();
 	}
 	
+	public Itens inserir(Itens itens,Long idPedido) {
+		Pedido pedido = pedidoService.buscarPorId(idPedido);
+		itens.setPedido(pedido);
+		return itemsRepositorio.save(itens);
+	}
+	
 
 }
