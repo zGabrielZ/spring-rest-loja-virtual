@@ -28,6 +28,8 @@ public class PedidoDTO implements Serializable{
 
 	private Long id;
 	
+	private Long numeroDoPedido;
+	
 	@JsonFormat(pattern = "dd/MM/yyyy HH:mm",timezone = MY_TIME_ZONE)
 	private Date dataDoPedido;
 	

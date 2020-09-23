@@ -36,6 +36,8 @@ public class Pedido implements Serializable{
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
+	private Long numeroDoPedido;
+	
 	private Date dataDoPedido;
 	
 	private Date dataDoPedidoFinalizada;
@@ -52,9 +54,10 @@ public class Pedido implements Serializable{
 	@OneToMany(mappedBy = "pedido",fetch = FetchType.EAGER)
 	private List<Itens> itens = new ArrayList<Itens>();
 	
-	public Pedido(Long id, Date dataDoPedido, Date dataDoPedidoCancelada, PedidoStatus pedidoStatus,
+	public Pedido(Long id,Long numeroDoPedido,Date dataDoPedido, Date dataDoPedidoCancelada, PedidoStatus pedidoStatus,
 			Usuario usuario) {
 		this.id = id;
+		this.numeroDoPedido = numeroDoPedido;
 		this.dataDoPedido = dataDoPedido;
 		this.dataDoPedidoCancelada = dataDoPedidoCancelada;
 		this.pedidoStatus = pedidoStatus;

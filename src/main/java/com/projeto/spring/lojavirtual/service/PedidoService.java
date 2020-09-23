@@ -15,6 +15,7 @@ import com.projeto.spring.lojavirtual.modelo.entidade.enums.PedidoStatus;
 import com.projeto.spring.lojavirtual.repositorio.ItensRepositorio;
 import com.projeto.spring.lojavirtual.repositorio.PedidoRepositorio;
 import com.projeto.spring.lojavirtual.service.exceptions.EntidadeNaoEncontrado;
+import com.projeto.spring.lojavirtual.service.exceptions.RegraDeNegocio;
 
 @Service
 public class PedidoService {	
@@ -31,8 +32,18 @@ public class PedidoService {
 	@Autowired
 	private ItensRepositorio itensRepositorio;
 	
+	public void validarNumeroDoPedido(Long numeroDoPedido) {
+		boolean numeroDoPedidoPedido = pedidoRepositorio.existsByNumeroDoPedido(numeroDoPedido);
+		if(numeroDoPedidoPedido) {
+			throw new RegraDeNegocio("Já existe este número do pedido cadastrado, por favor tente novamente");
+		}
+	}
+	
 	@Transactional
 	public Pedido inserir(Pedido pedido) {
+
+		validarNumeroDoPedido(pedido.getNumeroDoPedido());
+
 		pedido.setDataDoPedido(new Date());
 		pedido.setPedidoStatus(PedidoStatus.ABERTA);
 		

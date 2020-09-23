@@ -19,4 +19,6 @@ public interface PedidoRepositorio extends JpaRepository<Pedido, Long>{
 	@Query("select p from Pedido p where (coalesce(:min,null) IS NULL OR p.dataDoPedido >= :min) AND (coalesce(:min,null) IS NULL OR p.dataDoPedido <= :max) and p.usuario.id =:idUsuario")
 	public List<Pedido> filtrarPeriodo(Date min, Date max,Long idUsuario);
 	
+	boolean existsByNumeroDoPedido(Long numeroDoPedido);
+	
 }

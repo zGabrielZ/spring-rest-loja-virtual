@@ -53,12 +53,12 @@ public class ConfigBanco implements CommandLineRunner{
 		
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 		
-		Pedido pedido = new Pedido(null,sdf.parse("19/09/2020 10:00"),null,PedidoStatus.ABERTA, usuario);
-		Pedido pedido2 = new Pedido(null,sdf.parse("20/09/2020 12:00"),null,PedidoStatus.CANCELADA, usuario);
-		Pedido pedido3 = new Pedido(null,sdf.parse("21/09/2020 14:00"),null,PedidoStatus.CANCELADA, usuario);
+		Pedido pedido = new Pedido(null,1L,sdf.parse("19/09/2020 10:00"),null,PedidoStatus.ABERTA, usuario);
+		Pedido pedido2 = new Pedido(null,2L,sdf.parse("20/09/2020 12:00"),null,PedidoStatus.CANCELADA, usuario);
+		Pedido pedido3 = new Pedido(null,3L,sdf.parse("21/09/2020 14:00"),null,PedidoStatus.CANCELADA, usuario);
 		
-		Pedido pedido4 = new Pedido(null,sdf.parse("17/09/2020 10:00"),null,PedidoStatus.ABERTA, usuario2);
-		Pedido pedido5 = new Pedido(null,sdf.parse("18/09/2020 10:00"),null,PedidoStatus.CANCELADA, usuario2);
+		Pedido pedido4 = new Pedido(null,4L,sdf.parse("17/09/2020 10:00"),null,PedidoStatus.ABERTA, usuario2);
+		Pedido pedido5 = new Pedido(null,5L,sdf.parse("18/09/2020 10:00"),null,PedidoStatus.CANCELADA, usuario2);
 		
 		usuario.getPedidos().addAll(Arrays.asList(pedido,pedido2,pedido3));
 		usuario2.getPedidos().addAll(Arrays.asList(pedido4,pedido5));
