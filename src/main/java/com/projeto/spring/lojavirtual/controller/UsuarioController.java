@@ -43,10 +43,10 @@ public class UsuarioController {
 	}
 	
 	@PostMapping("/autenticar")
-	public ResponseEntity<Usuario> autenticar(@Valid @RequestBody UsuarioAutenticarDTO usuarioAutenticarDTO){
+	public ResponseEntity<UsuarioDTO> autenticar(@Valid @RequestBody UsuarioAutenticarDTO usuarioAutenticarDTO){
 		Usuario usuario = paraAutenticarDto(usuarioAutenticarDTO);
 		usuario = usuarioService.autenticar(usuario.getEmail(),usuario.getSenha());
-		return ResponseEntity.noContent().build();
+		return ResponseEntity.ok().body(paraVisualizacaoDto(usuario));
 	}
 	
 	@GetMapping("/{id}")

@@ -48,7 +48,7 @@ public class ItensController {
 	public ResponseEntity<Void> deletar(@PathVariable Long idPedido,
 			@PathVariable Long idItem) {
 		Itens itens = itensService.consultarPorId(idPedido, idItem);
-		itensService.deletar(itens.getId());
+		itensService.deletar(itens);
 		return ResponseEntity.noContent().build();
 	}
 	

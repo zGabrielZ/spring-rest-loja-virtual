@@ -62,8 +62,18 @@ public class ItensService {
 		}
 	}
 	
-	public void deletar(Long idItem) {
-		itemsRepositorio.deleteById(idItem);
+	@Transactional
+	public void deletar(Itens itens) {
+		
+		Produto produto = produtoService.buscarPorId(itens.getProduto().getId());
+		itens.setProduto(produto);
+		produto.getItens().add(itens);
+		
+		Integer estoque = itens.getProduto().getEstoque();
+		Integer estoqueAtual = estoque += itens.getQuantidade();
+		itens.getProduto().setEstoque(estoqueAtual);
+		
+		itemsRepositorio.deleteById(itens.getId());
 	}
 	
 	@Transactional
