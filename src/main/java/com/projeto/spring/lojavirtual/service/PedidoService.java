@@ -62,6 +62,10 @@ public class PedidoService {
 			Integer estoqueAtual = itens.getProduto().getEstoque() - itens.getQuantidade();
 			itens.getProduto().setEstoque(estoqueAtual);
 			
+			if(estoqueAtual<0) {
+				throw new RegraDeNegocio("Não podemos inserir, pois o estoque já chegou a zero");
+			}
+			
 		}
 		
 		itensRepositorio.saveAll(pedido.getItens());
