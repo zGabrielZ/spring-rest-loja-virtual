@@ -22,8 +22,10 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.projeto.spring.lojavirtual.controller.utils.URL;
+import com.projeto.spring.lojavirtual.modelo.entidade.Itens;
 import com.projeto.spring.lojavirtual.modelo.entidade.Pedido;
 import com.projeto.spring.lojavirtual.modelo.entidade.Usuario;
+import com.projeto.spring.lojavirtual.modelo.entidade.dto.ItensDTO;
 import com.projeto.spring.lojavirtual.modelo.entidade.dto.PedidoDTO;
 import com.projeto.spring.lojavirtual.modelo.entidade.dto.PedidoInserirDTO;
 import com.projeto.spring.lojavirtual.service.PedidoService;
@@ -93,6 +95,12 @@ public class PedidoController {
 		pedidoService.alterarDadosDoPedido(pedidoId);
 	}
 	
+	@GetMapping("/{idPedido}/itens")
+	public ResponseEntity<List<ItensDTO>> listagemDeItens(@PathVariable Long idPedido) {
+		Pedido pedido = pedidoService.buscarPorId(idPedido);
+		return ResponseEntity.ok().body(paraListaItensDto(pedido.getItens()));
+	}
+	
 	public Pedido paraInserirDto(PedidoInserirDTO inserirDTO) {
 		return modelMapper.map(inserirDTO,Pedido.class);
 	}
@@ -104,6 +112,16 @@ public class PedidoController {
 	private List<PedidoDTO> paraListaDto(List<Pedido> pedidos) {
 		return pedidos.stream()
 				.map(pedido -> paraVisualizacaoDto(pedido))
+				.collect(Collectors.toList());
+	}
+	
+	public ItensDTO paraVisualizacaoItensDto(Itens itens) {
+		return modelMapper.map(itens,ItensDTO.class);
+	}
+	
+	private List<ItensDTO> paraListaItensDto(List<Itens> itens) {
+		return itens.stream()
+				.map(item -> paraVisualizacaoItensDto(item))
 				.collect(Collectors.toList());
 	}
 }
