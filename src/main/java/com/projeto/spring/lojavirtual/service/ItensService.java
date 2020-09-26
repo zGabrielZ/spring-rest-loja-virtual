@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.projeto.spring.lojavirtual.modelo.entidade.Itens;
 import com.projeto.spring.lojavirtual.modelo.entidade.Pedido;
 import com.projeto.spring.lojavirtual.modelo.entidade.Produto;
+import com.projeto.spring.lojavirtual.modelo.entidade.enums.PedidoStatus;
 import com.projeto.spring.lojavirtual.repositorio.ItensRepositorio;
 import com.projeto.spring.lojavirtual.service.exceptions.EntidadeNaoEncontrado;
 import com.projeto.spring.lojavirtual.service.exceptions.RegraDeNegocio;
@@ -46,11 +47,24 @@ public class ItensService {
 		
 		Produto produto = produtoService.buscarPorId(itens.getProduto().getId());
 		itens.setProduto(produto);
+		itens.setPreco(produto.getPreco());
 		produto.getItens().add(itens);
 		
 		validarEstoque(itens);
 		
+		validarPedido(itens);
+		
 		return itemsRepositorio.save(itens);
+	}
+	
+	public void validarPedido(Itens itens) {
+		if(itens.getPedido().getPedidoStatus().equals(PedidoStatus.FINALIZADA)) {
+			throw new RegraDeNegocio("Não podemos inserir, pois já está finalizada ");
+		}
+		
+		if(itens.getPedido().getPedidoStatus().equals(PedidoStatus.CANCELADA)) {
+			throw new RegraDeNegocio("Não podemos inserir, pois já está cancelada ");
+		}
 	}
 	
 	public void validarEstoque(Itens itens) {
@@ -73,6 +87,8 @@ public class ItensService {
 		Integer estoqueAtual = estoque += itens.getQuantidade();
 		itens.getProduto().setEstoque(estoqueAtual);
 		
+		validarPedido(itens);
+		
 		itemsRepositorio.deleteById(itens.getId());
 	}
 	
@@ -87,6 +103,7 @@ public class ItensService {
 			produto.getItens().add(itens);
 			
 			validarEstoque(itens);
+			validarPedido(itens);
 			
 			return itemsRepositorio.save(entidade);
 		} catch (EntityNotFoundException e) {
