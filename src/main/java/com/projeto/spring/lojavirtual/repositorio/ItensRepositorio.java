@@ -13,4 +13,6 @@ public interface ItensRepositorio extends JpaRepository<Itens, Long>{
 
 	@Query("select i from Itens i inner join i.pedido p where i.id =:idItens and p.id =:idPedido")
 	public Optional<Itens> verificarPedidoItens(Long idPedido,Long idItens);
+	
+	Optional<Itens> findByQuantidade(Integer quantidade);
 }

@@ -106,14 +106,30 @@ public class PedidoService {
 		return pedidoRepositorio.filtrarPeriodo(minDate, maxDate,idUsuario);
 	}
 	
-	public void cancelar(Long id) {
-		Optional<Pedido> pedido = pedidoRepositorio.findById(id);
-		if(!pedido.isPresent()) {
-			throw new EntidadeNaoEncontrado("Pedido não encontrado");
+	@Transactional
+	public Pedido cancelar(Pedido pedido) {
+		
+		buscarPorId(pedido.getId());
+		
+		pedido.cancelar();
+		
+		pedido = pedidoRepositorio.save(pedido);
+		
+		for(Itens itens : pedido.getItens()) {
+			
+			Produto produto = produtoService.buscarPorId(itens.getProduto().getId());
+			itens.setProduto(produto);
+			itens.setPreco(produto.getPreco());
+			itens.setPedido(pedido);
+			
+			Integer estoque = itens.getProduto().getEstoque(); 
+			Integer estoqueAtual = estoque += itens.getQuantidade();
+			itens.getProduto().setEstoque(estoqueAtual);
+			
 		}
 		
-		pedido.get().cancelar();
+		itensRepositorio.saveAll(pedido.getItens());
+		return pedido;
 		
-		pedidoRepositorio.save(pedido.get());
 	}
 }

@@ -82,12 +82,14 @@ public class PedidoController {
 		Pedido pedido = pedidoService.buscarPorId(id);
 		return ResponseEntity.ok().body(paraVisualizacaoDto(pedido));
 	}
-	
+		
 	@PutMapping("/{pedidoId}/cancelar")
 	@ResponseStatus(value = HttpStatus.NO_CONTENT)
 	public void paralisar(@PathVariable Long pedidoId) {
-		pedidoService.cancelar(pedidoId);
+		Pedido pedido = pedidoService.buscarPorId(pedidoId);
+		pedidoService.cancelar(pedido);
 	}
+	
 	
 	@PutMapping("/{pedidoId}/alterar")
 	@ResponseStatus(value = HttpStatus.NO_CONTENT)

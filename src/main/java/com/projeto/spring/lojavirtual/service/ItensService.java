@@ -65,6 +65,7 @@ public class ItensService {
 		if(itens.getPedido().getPedidoStatus().equals(PedidoStatus.CANCELADA)) {
 			throw new RegraDeNegocio("Não podemos inserir, pois já está cancelada ");
 		}
+		
 	}
 	
 	public void validarEstoque(Itens itens) {
@@ -76,6 +77,22 @@ public class ItensService {
 		}
 	}
 	
+	public void validarEstoqueAtualizar(Itens itens,Integer quantidade) {
+		
+		if(itens.getQuantidade() > quantidade) {
+			Integer quantidadeAtual = itens.getQuantidade() - quantidade; 
+			Integer estoqueAtual = itens.getProduto().getEstoque() + quantidadeAtual;
+			itens.getProduto().setEstoque(estoqueAtual);
+			itens.getProduto().setEstoque(quantidadeAtual);
+		}
+		
+		if(itens.getQuantidade() < quantidade) {
+			Integer quantidadeAtual = quantidade - itens.getQuantidade();
+			Integer estoqueAtual = itens.getProduto().getEstoque() - quantidadeAtual;
+			itens.getProduto().setEstoque(estoqueAtual);
+		}
+	}
+		
 	@Transactional
 	public void deletar(Itens itens) {
 		
@@ -83,7 +100,7 @@ public class ItensService {
 		itens.setProduto(produto);
 		produto.getItens().add(itens);
 		
-		Integer estoque = itens.getProduto().getEstoque();
+		Integer estoque = itens.getProduto().getEstoque(); 
 		Integer estoqueAtual = estoque += itens.getQuantidade();
 		itens.getProduto().setEstoque(estoqueAtual);
 		
@@ -99,20 +116,19 @@ public class ItensService {
 			updateData(entidade,itens);
 			
 			Produto produto = produtoService.buscarPorId(entidade.getProduto().getId());
-			itens.setProduto(produto);
-			produto.getItens().add(itens);
+			entidade.setProduto(produto);
+			produto.getItens().add(entidade);
 			
-			validarEstoque(itens);
-			validarPedido(itens);
+			validarPedido(entidade);
 			
 			return itemsRepositorio.save(entidade);
 		} catch (EntityNotFoundException e) {
-			throw new EntidadeNaoEncontrado("Itém não encontrado");
+			throw new EntidadeNaoEncontrado("Item não encontrado");
 		}
 	}
 
 	private void updateData(Itens entidade, Itens itens) {
-		entidade.setQuantidade(itens.getQuantidade());
+		entidade.setQuantidade(itens.getQuantidade());	
 	}
 	
 
