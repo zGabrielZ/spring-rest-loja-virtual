@@ -2,8 +2,6 @@ package com.projeto.spring.lojavirtual.service;
 
 import java.util.Optional;
 
-import javax.persistence.EntityNotFoundException;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,6 +11,7 @@ import com.projeto.spring.lojavirtual.modelo.entidade.Pedido;
 import com.projeto.spring.lojavirtual.modelo.entidade.Produto;
 import com.projeto.spring.lojavirtual.modelo.entidade.enums.PedidoStatus;
 import com.projeto.spring.lojavirtual.repositorio.ItensRepositorio;
+import com.projeto.spring.lojavirtual.repositorio.ProdutoRepositorio;
 import com.projeto.spring.lojavirtual.service.exceptions.EntidadeNaoEncontrado;
 import com.projeto.spring.lojavirtual.service.exceptions.RegraDeNegocio;
 
@@ -27,6 +26,9 @@ public class ItensService {
 	
 	@Autowired
 	private ProdutoService produtoService;
+	
+	@Autowired
+	private ProdutoRepositorio produtoRepositorio;
 	
 	public Itens consultarPorId(Long idPedido,Long idItens) {
 		Pedido pedido = pedidoService.buscarPorId(idPedido);
@@ -56,6 +58,67 @@ public class ItensService {
 		
 		return itemsRepositorio.save(itens);
 	}
+			
+	@Transactional
+	public void deletar(Itens itens) {
+		
+		Produto produto = produtoService.buscarPorId(itens.getProduto().getId());
+		itens.setProduto(produto);
+		produto.getItens().add(itens);
+		
+		Integer estoque = itens.getProduto().getEstoque(); 
+		Integer estoqueAtual = estoque += itens.getQuantidade();
+		itens.getProduto().setEstoque(estoqueAtual);
+		
+		validarPedido(itens);
+		
+		itemsRepositorio.deleteById(itens.getId());
+	}
+	
+	public Itens atualizar(Long idItens,Itens novoItens) {
+		Optional<Itens> antigoItens = itemsRepositorio.findById(idItens);
+		if(antigoItens.isPresent()) {
+			
+			Itens itens = antigoItens.get();
+			
+			
+			Produto produto = produtoService.buscarPorId(itens.getProduto().getId());
+			itens.setProduto(produto);
+			
+			validarEstoqueAtualizar(itens,novoItens.getQuantidade());
+			itens.setQuantidade(novoItens.getQuantidade());
+			
+			produtoRepositorio.save(produto);
+			return itemsRepositorio.save(itens);
+			
+		} else {
+			throw new EntidadeNaoEncontrado("Item não encontrado");
+		}
+	}
+	
+	
+	public void validarEstoqueAtualizar(Itens itens,Integer quantidade) {
+		
+		Integer estoqueAtual = 0;
+		
+		if(itens.getQuantidade() > quantidade) {
+			Integer quantidadeAtual = itens.getQuantidade() - quantidade; 
+			estoqueAtual = itens.getProduto().getEstoque() + quantidadeAtual;
+			itens.getProduto().setEstoque(estoqueAtual);
+		}
+		
+		if(itens.getQuantidade() < quantidade) {
+			Integer quantidadeAtual = quantidade - itens.getQuantidade();
+			estoqueAtual = itens.getProduto().getEstoque() - quantidadeAtual;
+			itens.getProduto().setEstoque(estoqueAtual);
+		}
+		
+		validarPedido(itens);
+		
+		if(estoqueAtual<0) {
+			throw new RegraDeNegocio("Não podemos inserir, pois o estoque já chegou a zero");
+		}
+	}
 	
 	public void validarPedido(Itens itens) {
 		if(itens.getPedido().getPedidoStatus().equals(PedidoStatus.FINALIZADA)) {
@@ -77,59 +140,6 @@ public class ItensService {
 		}
 	}
 	
-	public void validarEstoqueAtualizar(Itens itens,Integer quantidade) {
-		
-		if(itens.getQuantidade() > quantidade) {
-			Integer quantidadeAtual = itens.getQuantidade() - quantidade; 
-			Integer estoqueAtual = itens.getProduto().getEstoque() + quantidadeAtual;
-			itens.getProduto().setEstoque(estoqueAtual);
-			itens.getProduto().setEstoque(quantidadeAtual);
-		}
-		
-		if(itens.getQuantidade() < quantidade) {
-			Integer quantidadeAtual = quantidade - itens.getQuantidade();
-			Integer estoqueAtual = itens.getProduto().getEstoque() - quantidadeAtual;
-			itens.getProduto().setEstoque(estoqueAtual);
-		}
-	}
-		
-	@Transactional
-	public void deletar(Itens itens) {
-		
-		Produto produto = produtoService.buscarPorId(itens.getProduto().getId());
-		itens.setProduto(produto);
-		produto.getItens().add(itens);
-		
-		Integer estoque = itens.getProduto().getEstoque(); 
-		Integer estoqueAtual = estoque += itens.getQuantidade();
-		itens.getProduto().setEstoque(estoqueAtual);
-		
-		validarPedido(itens);
-		
-		itemsRepositorio.deleteById(itens.getId());
-	}
-	
-	@Transactional
-	public Itens atualizar(Long idItens,Itens itens,Long idPedido) {
-		try {
-			Itens entidade = itemsRepositorio.getOne(idItens);	
-			updateData(entidade,itens);
-			
-			Produto produto = produtoService.buscarPorId(entidade.getProduto().getId());
-			entidade.setProduto(produto);
-			produto.getItens().add(entidade);
-			
-			validarPedido(entidade);
-			
-			return itemsRepositorio.save(entidade);
-		} catch (EntityNotFoundException e) {
-			throw new EntidadeNaoEncontrado("Item não encontrado");
-		}
-	}
-
-	private void updateData(Itens entidade, Itens itens) {
-		entidade.setQuantidade(itens.getQuantidade());	
-	}
 	
 
 }

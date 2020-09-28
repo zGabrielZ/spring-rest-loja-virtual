@@ -52,6 +52,19 @@ public class ItensController {
 		return ResponseEntity.noContent().build();
 	}
 	
+//	@PutMapping("/{idPedido}/itens/{idItem}/alterar")
+//	public ResponseEntity<Itens> alterarQuantidade(
+//			@Valid @RequestBody ItensAlterarQuantidadeDTO alterarQuantidadeDTO,
+//			@PathVariable Long idPedido,
+//			@PathVariable Long idItem) {
+//		Pedido pedido = itensService.consultarPorId(idPedido, idItem).getPedido();
+//		Itens itens = paraAtualizarDto(alterarQuantidadeDTO);
+//		itens.setPedido(pedido);
+//		pedido.getItens().add(itens);
+//		itensService.atualizar(idItem, itens, idPedido);
+//		return ResponseEntity.noContent().build();
+//	}
+	
 	@PutMapping("/{idPedido}/itens/{idItem}/alterar")
 	public ResponseEntity<Itens> alterarQuantidade(
 			@Valid @RequestBody ItensAlterarQuantidadeDTO alterarQuantidadeDTO,
@@ -61,7 +74,7 @@ public class ItensController {
 		Itens itens = paraAtualizarDto(alterarQuantidadeDTO);
 		itens.setPedido(pedido);
 		pedido.getItens().add(itens);
-		itensService.atualizar(idItem, itens, idPedido);
+		itensService.atualizar(idItem, itens);
 		return ResponseEntity.noContent().build();
 	}
 	

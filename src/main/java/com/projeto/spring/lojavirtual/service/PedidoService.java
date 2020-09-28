@@ -32,13 +32,6 @@ public class PedidoService {
 	@Autowired
 	private ItensRepositorio itensRepositorio;
 	
-	public void validarNumeroDoPedido(Long numeroDoPedido) {
-		boolean numeroDoPedidoPedido = pedidoRepositorio.existsByNumeroDoPedido(numeroDoPedido);
-		if(numeroDoPedidoPedido) {
-			throw new RegraDeNegocio("Já existe este número do pedido cadastrado, por favor tente novamente");
-		}
-	}
-	
 	@Transactional
 	public Pedido inserir(Pedido pedido) {
 
@@ -131,5 +124,12 @@ public class PedidoService {
 		itensRepositorio.saveAll(pedido.getItens());
 		return pedido;
 		
+	}
+	
+	public void validarNumeroDoPedido(Long numeroDoPedido) {
+		boolean numeroDoPedidoPedido = pedidoRepositorio.existsByNumeroDoPedido(numeroDoPedido);
+		if(numeroDoPedidoPedido) {
+			throw new RegraDeNegocio("Já existe este número do pedido cadastrado, por favor tente novamente");
+		}
 	}
 }

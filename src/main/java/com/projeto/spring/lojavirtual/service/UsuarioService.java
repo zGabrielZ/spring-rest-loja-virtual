@@ -18,13 +18,6 @@ public class UsuarioService {
 	@Autowired
 	private UsuarioRepositorio usuarioRepositorio;
 	
-	public void validarEmail(String email) {
-		boolean usuarioEmail = usuarioRepositorio.existsByEmail(email);
-		if(usuarioEmail) {
-			throw new RegraDeNegocio("Já existe este usuário cadastrado com este email, por favor tente novamente");
-		}
-	}
-	
 	public Usuario inserir(Usuario usuario) {
 		validarEmail(usuario.getEmail());
 		return usuarioRepositorio.save(usuario);
@@ -54,5 +47,12 @@ public class UsuarioService {
 	
 	public List<Usuario> listagem(){
 		return usuarioRepositorio.findAll();
+	}
+	
+	public void validarEmail(String email) {
+		boolean usuarioEmail = usuarioRepositorio.existsByEmail(email);
+		if(usuarioEmail) {
+			throw new RegraDeNegocio("Já existe este usuário cadastrado com este email, por favor tente novamente");
+		}
 	}
 }
